@@ -33,7 +33,7 @@ public class PsCleaner extends ProcCleaner {
 	@Override
 	public void setup(BuildListener log) {
 		setLog(log);
-		username = getDescriptor().getUsername();  //TODO setup remotely in call() method, use different class loader?
+		username = getUser(); //get user name from slave.jar process
 		switchedOff = getDescriptor().isSwitchedOff();
 	}
 	
@@ -58,18 +58,9 @@ public class PsCleaner extends ProcCleaner {
 	
 	@Extension
 	public static class PsCleanerDescriptor extends ProcCleanerDescriptor {
-	
-		private String username;
+
 		private boolean switchedOff;
-		
-		public PsCleanerDescriptor() {
-			load();
-		}
-		
-		public String getUsername() {
-			return username;
-		}
-		
+
 		public boolean isSwitchedOff() {
 			return switchedOff;
 		}
@@ -80,7 +71,6 @@ public class PsCleaner extends ProcCleaner {
 		
 		@Override
 		public boolean configure(StaplerRequest req, JSONObject json) {
-			username = json.getString("username");
 			switchedOff = json.getBoolean("switchedOff");
 			save();
 			return true;
